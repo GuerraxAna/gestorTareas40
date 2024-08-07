@@ -1,6 +1,7 @@
-const path = requ('path');
+const path = require('path');
 
-NormalModule.exports = {
+module.exports = {
+    mode: 'development',
     entry: './src/index.js', //punto de entrada de la app
     output: {
         filename: 'bundle.js', //nombredelarchivodesalida
@@ -18,7 +19,7 @@ NormalModule.exports = {
                 use: {
                     loader: 'babel-loader', //Loader para convertir JS moderno al JS compatible a mas navegadores
                     options: {
-                        presets: ['Qbabel/preset-env'],
+                        presets: ['@babel/preset-env'],
                     },
                 },
             },
@@ -26,7 +27,9 @@ NormalModule.exports = {
     },
     devtool: 'source-map',
     devServer: {
-        contentBase: path.resolve(__dirname,'dist'),
+        static: {
+            directory: path.resolve(__dirname, 'dist'),
+        },
         compress: true, //Habilitar compresión gzip
         port: 9000, //Puerto del servidor de desarrollo
     },
