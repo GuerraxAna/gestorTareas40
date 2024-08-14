@@ -1,6 +1,6 @@
 import { getTasks } from "./task";
 
-export const renderTask = () => {
+export const renderTasks = () => {
     const taskList = document.getElementById("task-list");
     taskList.innerHTML = "";
 
@@ -16,7 +16,7 @@ export const renderTask = () => {
         li.innerHTML = `
             ${task.text}
             <button class="delete"> Eliminar </button>
-            <button class="toggle"> ${task.completed === fasle ? "Completar" : "Deshacer"} </button>
+            <button class="toggle"> ${task.completed === false ? "Completar" : "Deshacer"} </button>
         `;
 
         taskList.appendChild(li);

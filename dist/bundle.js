@@ -11,7 +11,9 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   addTask: () => (/* binding */ addTask),
-/* harmony export */   getTasks: () => (/* binding */ getTasks)
+/* harmony export */   deleteTask: () => (/* binding */ deleteTask),
+/* harmony export */   getTasks: () => (/* binding */ getTasks),
+/* harmony export */   updateTask: () => (/* binding */ updateTask)
 /* harmony export */ });
 //lista de tareas
 var tasks = JSON.parse(localStorage.getItem('tasks')) || [];
@@ -24,12 +26,31 @@ var addTask = function addTask(task) {
     completed: false
   };
   tasks.push(newTask);
-  localStorage.setItem('tasks', JSON.stringify(task));
+  localStorage.setItem('tasks', JSON.stringify(tasks));
 };
 
 //Función para poder traer la lista de tareas
 var getTasks = function getTasks() {
   return tasks;
+};
+
+//Función para eliminar tareas
+var deleteTask = function deleteTask(id) {
+  tasks = tasks.filter(function (task) {
+    return task.id !== parseInt(id);
+  });
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+};
+
+//Función para actualizar
+var updateTask = function updateTask(id) {
+  tasks = tasks.map(function (task) {
+    if (task.id === parseInt(id)) {
+      task.completed = !task.completed;
+    }
+    return task;
+  });
+  localStorage.setItem('tasks', JSON.stringify(tasks));
 };
 
 /***/ }),
@@ -42,11 +63,11 @@ var getTasks = function getTasks() {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   renderTask: () => (/* binding */ renderTask)
+/* harmony export */   renderTasks: () => (/* binding */ renderTasks)
 /* harmony export */ });
 /* harmony import */ var _task__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./task */ "./src/task.js");
 
-var renderTask = function renderTask() {
+var renderTasks = function renderTasks() {
   var taskList = document.getElementById("task-list");
   taskList.innerHTML = "";
   var tasks = (0,_task__WEBPACK_IMPORTED_MODULE_0__.getTasks)();
@@ -56,7 +77,7 @@ var renderTask = function renderTask() {
     if (task.completed === true) {
       li.classList.add("completed");
     }
-    li.innerHTML = "\n            ".concat(task.text, "\n            <button class=\"delete\"> Eliminar </button>\n            <button class=\"toggle\"> ").concat(task.completed === fasle ? "Completar" : "Deshacer", " </button>\n        ");
+    li.innerHTML = "\n            ".concat(task.text, "\n            <button class=\"delete\"> Eliminar </button>\n            <button class=\"toggle\"> ").concat(task.completed === false ? "Completar" : "Deshacer", " </button>\n        ");
     taskList.appendChild(li);
   });
 };
@@ -129,14 +150,28 @@ __webpack_require__.r(__webpack_exports__);
 
 
 document.addEventListener("DOMContentLoaded", function () {
-  renderTasks();
+  (0,_ui__WEBPACK_IMPORTED_MODULE_0__.renderTasks)();
   document.getElementById("task-form").addEventListener("submit", function (e) {
     e.preventDefault();
     var taskInput = document.getElementById("task-input");
     if (taskInput.value !== "") {
       (0,_task__WEBPACK_IMPORTED_MODULE_1__.addTask)(taskInput.value);
-      (0,_ui__WEBPACK_IMPORTED_MODULE_0__.renderTask)();
+      (0,_ui__WEBPACK_IMPORTED_MODULE_0__.renderTasks)();
       document.getElementById("task-input").value = "";
+    }
+  });
+
+  //EVENTO PARA LOS BOTONES
+  document.getElementById("task-list").addEventListener("click", function (e) {
+    if (e.target.classList.contains("delete")) {
+      var taskId = e.target.parentElement.getAttribute("data-id");
+      (0,_task__WEBPACK_IMPORTED_MODULE_1__.deleteTask)(taskId);
+      (0,_ui__WEBPACK_IMPORTED_MODULE_0__.renderTasks)();
+    }
+    if (e.target.classList.contains("toggle")) {
+      var _taskId = e.target.parentElement.getAttribute("data-id");
+      (0,_task__WEBPACK_IMPORTED_MODULE_1__.updateTask)(_taskId);
+      (0,_ui__WEBPACK_IMPORTED_MODULE_0__.renderTasks)();
     }
   });
 });
